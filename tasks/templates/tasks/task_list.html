@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<div style="float:right">
+    <!-- https://www.w3schools.com/howto/howto_css_search_button.asp -->
+   <form id="searchForm" method="get">
+      <input type="text" placeholder="Search..." name="search" id="searchInput" value="{{ search_keyword|default:'' }}">
+      <button type="submit"><i class="fa fa-search"></i>Search</button>
+      <a href="/well/"><i class="fa fa-undo"></i></a>
+   </form>
+    
+  <script>
+    document.getElementById('searchForm').onsubmit = function() {
+        var searchInput = document.getElementById('searchInput').value.trim();
+        if (!searchInput) {
+            var url = window.location.href.split('?')[0];
+            window.location.href = url;
+            return false;  // Prevent form submission
+        }
+    };
+  </script>
+</div>
+<div class="container">
+    <h1 class="my-4">Tasks</h1>
+    <a href="{% url 'task-create-ui' %}" class="btn btn-primary mb-4">Add Task</a>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        {% if tasks %}
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.get_status_display }}</td>
+                    <td>
+                        <a href="{% url 'task-detail-ui' task.id %}" class="btn btn-info btn-sm">View</a>
+                        {% if task.user == request.user %}
+                            <a href="{% url 'task-update-ui' task.id %}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="{% url 'task-delete-ui' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        {% endif %}
+    </table>
+</div>
+{% endblock %}

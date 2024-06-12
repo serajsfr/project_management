@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Task Detail{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Task Detail</h1>
+    <div class="card">
+        <div class="card-header">
+            {{ task.title }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Status: {{ task.get_status_display }}</h5>
+            <p class="card-text">{{ task.description }}</p>
+            <p class="card-text">Created at: {{ task.created_at }}</p>
+            {% if task.created_at != task.updated_at %}
+                <p class="card-text">Updated at: {{ task.updated_at }}</p>
+            {% endif %}
+            {% if task.user == request.user %}
+                <a href="{% url 'task-update-ui' task.id %}" class="btn btn-warning">Edit</a>
+                <a href="{% url 'task-delete-ui' task.id %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+            <a href="{% url 'task-list-ui' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
